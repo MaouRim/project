@@ -1,250 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>System Interface</title>
+<title>System Breach Detected</title>
 
 <style>
-
 body{
-margin:0;
-background:black;
-color:#00ff00;
-font-family:monospace;
-overflow:hidden;
+    margin:0;
+    overflow:hidden;
+    background:black;
+    color:#00ff00;
+    font-family:monospace;
 }
 
 canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-1;
-}
-
-#content{
-padding:40px;
-}
-
-#terminal{
-white-space:pre-line;
-line-height:1.5;
-}
-
-.progress{
-width:100%;
-background:#111;
-border:1px solid #00ff00;
-margin-top:20px;
-}
-
-.bar{
-height:20px;
-width:0%;
-background:#00ff00;
+    position:fixed;
+    top:0;
+    left:0;
 }
 
 .popup{
-position:fixed;
-background:#111;
-border:2px solid red;
-color:red;
-padding:15px;
-font-weight:bold;
-display:none;
+    position:absolute;
+    top:40%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:black;
+    border:2px solid #00ff00;
+    padding:20px;
+    font-size:20px;
+    text-align:center;
+    animation: blink 1s infinite;
 }
 
-#popup1{top:20px;right:20px;}
-#popup2{bottom:20px;left:20px;}
-
+@keyframes blink{
+    50%{opacity:0.4;}
+}
 </style>
+
 </head>
 
 <body>
 
 <canvas id="matrix"></canvas>
 
-<div id="popup1" class="popup">⚠ Suspicious network activity detected</div>
-<div id="popup2" class="popup">⚠ Running security diagnostics</div>
-
-<div id="content">
-
-<div id="info"></div>
-<div id="terminal"></div>
-
-<div class="progress">
-<div id="bar" class="bar"></div>
-</div>
-
+<div class="popup">
+⚠ SYSTEM BREACH DETECTED ⚠<br><br>
+Accessing contacts...<br>
+Uploading data...<br>
+IP Logged.
 </div>
 
 <script>
 
-/* MATRIX BACKGROUND */
+var canvas = document.getElementById("matrix");
+var ctx = canvas.getContext("2d");
 
-let canvas=document.getElementById("matrix");
-let ctx=canvas.getContext("2d");
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
 
-canvas.height=window.innerHeight;
-canvas.width=window.innerWidth;
+var letters = "01HACKEDSYSTEMACCESSGRANTED";
+letters = letters.split("");
 
-let letters="01";
-letters=letters.split("");
+var fontSize = 14;
+var columns = canvas.width/fontSize;
 
-let fontSize=14;
-let columns=canvas.width/fontSize;
-
-let drops=[];
-for(let x=0;x<columns;x++) drops[x]=1;
+var drops = [];
+for(var x = 0; x < columns; x++)
+drops[x] = 1;
 
 function draw(){
 
-ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillStyle = "rgba(0,0,0,0.05)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-ctx.fillStyle="#0F0";
-ctx.font=fontSize+"px monospace;
+ctx.fillStyle = "#0F0";
+ctx.font = fontSize+"px monospace";
 
-for(let i=0;i<drops.length;i++){
+for(var i=0;i<drops.length;i++){
 
-let text=letters[Math.floor(Math.random()*letters.length)];
+var text = letters[Math.floor(Math.random()*letters.length)];
 
 ctx.fillText(text,i*fontSize,drops[i]*fontSize);
 
-if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
-drops[i]=0;
+if(drops[i]*fontSize > canvas.height && Math.random()>0.975)
+drops[i] = 0;
 
 drops[i]++;
-
 }
 
 }
 
 setInterval(draw,33);
 
-/* GET PUBLIC IP */
-
-async function getIP(){
-
-let r=await fetch("https://api.ipify.org?format=json");
-let d=await r.json();
-return d.ip;
-
-}
-
-/* LOCATION */
-
-function getLocation(){
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(function(position){
-
-let lat=position.coords.latitude;
-let lon=position.coords.longitude;
-
-document.getElementById("terminal").innerHTML+=
-"> location access granted\n";
-
-document.getElementById("terminal").innerHTML+=
-"> latitude: "+lat+"\n";
-
-document.getElementById("terminal").innerHTML+=
-"> longitude: "+lon+"\n";
-
-document.getElementById("terminal").innerHTML+=
-"> mapping coordinates...\n\n";
-
-});
-
-}else{
-
-document.getElementById("terminal").innerHTML+=
-"> location not supported\n";
-
-}
-
-}
-
-/* TERMINAL SIMULATION */
-
-async function start(){
-
-let ip=await getIP();
-let device=navigator.userAgent;
-
-document.getElementById("info").innerHTML=
-"IP: "+ip+"<br>Device: "+device+"<br><br>";
-
-let lines=[
-"> initializing system interface",
-"> connecting to remote node",
-"> scanning open ports",
-"> analyzing device fingerprint",
-"> checking breach databases",
-"> inspecting network packets",
-"> running security diagnostics",
-"> generating system report"
-];
-
-let term=document.getElementById("terminal");
-let i=0;
-
-function type(){
-
-if(i<lines.length){
-
-term.innerHTML+=lines[i]+"\n";
-i++;
-setTimeout(type,1200);
-
-}
-else{
-
-term.innerHTML+="\n[simulation complete]\n";
-term.innerHTML+="security awareness demonstration";
-
-}
-
-}
-
-type();
-
-/* PROGRESS BAR */
-
-let width=0;
-let bar=document.getElementById("bar");
-
-let p=setInterval(()=>{
-
-if(width>=100){
-
-clearInterval(p);
-
-}else{
-
-width++;
-bar.style.width=width+"%";
-
-}
-
-},60);
-
-/* POPUPS */
+setTimeout(()=>{
+alert("Remote access established.");
+},3000);
 
 setTimeout(()=>{
-document.getElementById("popup1").style.display="block";
-},4000);
+alert("Downloading gallery images...");
+},6000);
 
 setTimeout(()=>{
-document.getElementById("popup2").style.display="block";
-},7000);
-
-/* LOCATION REQUEST */
-
-setTimeout(getLocation,6000);
-
-}
-
-window.onload=start;
+alert("Device control enabled.");
+},9000);
 
 </script>
 
