@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>System Analysis</title>
+<title>System Interface</title>
 
 <style>
 
@@ -9,12 +9,13 @@ body{
 background:black;
 color:#00ff00;
 font-family:monospace;
-padding:40px;
+padding:30px;
+overflow:hidden;
 }
 
 #terminal{
-margin-top:20px;
-line-height:1.6;
+white-space:pre-line;
+line-height:1.5;
 }
 
 .progress{
@@ -25,30 +26,45 @@ margin-top:20px;
 }
 
 .bar{
-width:0%;
 height:20px;
+width:0%;
 background:#00ff00;
 }
 
-</style>
+.popup{
+position:fixed;
+background:#111;
+border:2px solid red;
+color:red;
+padding:15px;
+font-weight:bold;
+display:none;
+}
 
+#popup1{top:20px;right:20px;}
+#popup2{bottom:20px;left:20px;}
+
+</style>
 </head>
 
 <body>
+
+<div id="popup1" class="popup">⚠ Suspicious network activity detected</div>
+<div id="popup2" class="popup">⚠ Running security diagnostics</div>
 
 <div id="info"></div>
 <div id="terminal"></div>
 
 <div class="progress">
-<div class="bar" id="bar"></div>
+<div id="bar" class="bar"></div>
 </div>
 
 <script>
 
 async function getIP(){
-let res = await fetch("https://api.ipify.org?format=json");
-let data = await res.json();
-return data.ip;
+let r = await fetch("https://api.ipify.org?format=json");
+let d = await r.json();
+return d.ip;
 }
 
 async function start(){
@@ -57,50 +73,57 @@ let ip = await getIP();
 let device = navigator.userAgent;
 
 document.getElementById("info").innerHTML =
-"IP Detected: "+ip+"<br>Device: "+device+"<br><br>";
+"IP: "+ip+"<br>Device: "+device+"\n\n";
 
-let steps=[
-"Initializing system interface...",
-"Scanning network ports...",
-"Analyzing device fingerprint...",
-"Checking breach databases...",
-"Running packet inspection...",
-"Simulating brute force test...",
-"Checking system vulnerabilities...",
-"System hacked succesfull..."
-
+let lines=[
+"> initializing system interface",
+"> connecting to remote node",
+"> scanning open ports",
+"> analyzing device fingerprint",
+"> searching breach databases",
+"> running packet inspection",
+"> simulating brute force check",
+"> decrypting hash tables",
+"> compiling security report",
+"> process complete"
 ];
 
+let term=document.getElementById("terminal");
 let i=0;
-let terminal=document.getElementById("terminal");
 
-function typeLine(){
-if(i<steps.length){
-terminal.innerHTML += steps[i]+"<br>";
+function type(){
+if(i<lines.length){
+term.innerHTML += lines[i]+"\n";
 i++;
-setTimeout(typeLine,1500);
-}else{
-terminal.innerHTML += "<br>Scan Complete<br>";
-terminal.innerHTML += "⚠️ Security awareness demo.<br>";
-terminal.innerHTML += "Always verify links before clicking.";
+setTimeout(type,1200);
+}
+else{
+term.innerHTML += "\n[simulation finished]\n";
+term.innerHTML += "Security awareness demo.";
 }
 }
 
-typeLine();
+type();
 
 let width=0;
 let bar=document.getElementById("bar");
 
-let progress=setInterval(function(){
-
+let p=setInterval(()=>{
 if(width>=100){
-clearInterval(progress);
+clearInterval(p);
 }else{
 width++;
 bar.style.width=width+"%";
 }
+},60);
 
-},80);
+setTimeout(()=>{
+document.getElementById("popup1").style.display="block";
+},3000);
+
+setTimeout(()=>{
+document.getElementById("popup2").style.display="block";
+},6000);
 
 }
 
