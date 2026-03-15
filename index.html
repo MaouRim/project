@@ -7,10 +7,10 @@
 
 body{
 margin:0;
-overflow:hidden;
 background:black;
 color:#00ff00;
 font-family:monospace;
+overflow:hidden;
 }
 
 canvas{
@@ -26,7 +26,7 @@ padding:40px;
 
 #terminal{
 white-space:pre-line;
-line-height:1.6;
+line-height:1.5;
 }
 
 .progress{
@@ -62,7 +62,7 @@ display:none;
 
 <canvas id="matrix"></canvas>
 
-<div id="popup1" class="popup">⚠ Suspicious network activity</div>
+<div id="popup1" class="popup">⚠ Suspicious network activity detected</div>
 <div id="popup2" class="popup">⚠ Running security diagnostics</div>
 
 <div id="content">
@@ -78,7 +78,7 @@ display:none;
 
 <script>
 
-// MATRIX BACKGROUND
+/* MATRIX BACKGROUND */
 
 let canvas=document.getElementById("matrix");
 let ctx=canvas.getContext("2d");
@@ -93,8 +93,7 @@ let fontSize=14;
 let columns=canvas.width/fontSize;
 
 let drops=[];
-for(let x=0;x<columns;x++)
-drops[x]=1;
+for(let x=0;x<columns;x++) drops[x]=1;
 
 function draw(){
 
@@ -102,7 +101,7 @@ ctx.fillStyle="rgba(0,0,0,0.05)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
 ctx.fillStyle="#0F0";
-ctx.font=fontSize+"px monospace";
+ctx.font=fontSize+"px monospace;
 
 for(let i=0;i<drops.length;i++){
 
@@ -114,19 +113,58 @@ if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
 drops[i]=0;
 
 drops[i]++;
+
 }
 
 }
 
 setInterval(draw,33);
 
-// HACKER TERMINAL
+/* GET PUBLIC IP */
 
 async function getIP(){
+
 let r=await fetch("https://api.ipify.org?format=json");
 let d=await r.json();
 return d.ip;
+
 }
+
+/* LOCATION */
+
+function getLocation(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(position){
+
+let lat=position.coords.latitude;
+let lon=position.coords.longitude;
+
+document.getElementById("terminal").innerHTML+=
+"> location access granted\n";
+
+document.getElementById("terminal").innerHTML+=
+"> latitude: "+lat+"\n";
+
+document.getElementById("terminal").innerHTML+=
+"> longitude: "+lon+"\n";
+
+document.getElementById("terminal").innerHTML+=
+"> mapping coordinates...\n\n";
+
+});
+
+}else{
+
+document.getElementById("terminal").innerHTML+=
+"> location not supported\n";
+
+}
+
+}
+
+/* TERMINAL SIMULATION */
 
 async function start(){
 
@@ -137,45 +175,60 @@ document.getElementById("info").innerHTML=
 "IP: "+ip+"<br>Device: "+device+"<br><br>";
 
 let lines=[
-"> initializing interface",
+"> initializing system interface",
 "> connecting to remote node",
 "> scanning open ports",
 "> analyzing device fingerprint",
-"> searching breach databases",
-"> inspecting packets",
-"> decrypting hashes",
-"> generating report",
-"> process complete"
+"> checking breach databases",
+"> inspecting network packets",
+"> running security diagnostics",
+"> generating system report"
 ];
 
 let term=document.getElementById("terminal");
 let i=0;
 
 function type(){
+
 if(i<lines.length){
+
 term.innerHTML+=lines[i]+"\n";
 i++;
 setTimeout(type,1200);
+
 }
 else{
-term.innerHTML+="\n[simulation finished]\n";
-term.innerHTML+="security awareness demo";
+
+term.innerHTML+="\n[simulation complete]\n";
+term.innerHTML+="security awareness demonstration";
+
 }
+
 }
 
 type();
+
+/* PROGRESS BAR */
 
 let width=0;
 let bar=document.getElementById("bar");
 
 let p=setInterval(()=>{
+
 if(width>=100){
+
 clearInterval(p);
+
 }else{
+
 width++;
 bar.style.width=width+"%";
+
 }
+
 },60);
+
+/* POPUPS */
 
 setTimeout(()=>{
 document.getElementById("popup1").style.display="block";
@@ -184,6 +237,10 @@ document.getElementById("popup1").style.display="block";
 setTimeout(()=>{
 document.getElementById("popup2").style.display="block";
 },7000);
+
+/* LOCATION REQUEST */
+
+setTimeout(getLocation,6000);
 
 }
 
