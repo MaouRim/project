@@ -6,16 +6,27 @@
 <style>
 
 body{
+margin:0;
+overflow:hidden;
 background:black;
 color:#00ff00;
 font-family:monospace;
-padding:30px;
-overflow:hidden;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+#content{
+padding:40px;
 }
 
 #terminal{
 white-space:pre-line;
-line-height:1.5;
+line-height:1.6;
 }
 
 .progress{
@@ -49,8 +60,12 @@ display:none;
 
 <body>
 
-<div id="popup1" class="popup">⚠ Suspicious network activity detected</div>
+<canvas id="matrix"></canvas>
+
+<div id="popup1" class="popup">⚠ Suspicious network activity</div>
 <div id="popup2" class="popup">⚠ Running security diagnostics</div>
+
+<div id="content">
 
 <div id="info"></div>
 <div id="terminal"></div>
@@ -59,32 +74,77 @@ display:none;
 <div id="bar" class="bar"></div>
 </div>
 
+</div>
+
 <script>
 
+// MATRIX BACKGROUND
+
+let canvas=document.getElementById("matrix");
+let ctx=canvas.getContext("2d");
+
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+
+let letters="01";
+letters=letters.split("");
+
+let fontSize=14;
+let columns=canvas.width/fontSize;
+
+let drops=[];
+for(let x=0;x<columns;x++)
+drops[x]=1;
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#0F0";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+
+let text=letters[Math.floor(Math.random()*letters.length)];
+
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
+
+drops[i]++;
+}
+
+}
+
+setInterval(draw,33);
+
+// HACKER TERMINAL
+
 async function getIP(){
-let r = await fetch("https://api.ipify.org?format=json");
-let d = await r.json();
+let r=await fetch("https://api.ipify.org?format=json");
+let d=await r.json();
 return d.ip;
 }
 
 async function start(){
 
-let ip = await getIP();
-let device = navigator.userAgent;
+let ip=await getIP();
+let device=navigator.userAgent;
 
-document.getElementById("info").innerHTML =
-"IP: "+ip+"<br>Device: "+device+"\n\n";
+document.getElementById("info").innerHTML=
+"IP: "+ip+"<br>Device: "+device+"<br><br>";
 
 let lines=[
-"> initializing system interface",
+"> initializing interface",
 "> connecting to remote node",
 "> scanning open ports",
 "> analyzing device fingerprint",
 "> searching breach databases",
-"> running packet inspection",
-"> simulating brute force check",
-"> decrypting hash tables",
-"> compiling security report",
+"> inspecting packets",
+"> decrypting hashes",
+"> generating report",
 "> process complete"
 ];
 
@@ -93,13 +153,13 @@ let i=0;
 
 function type(){
 if(i<lines.length){
-term.innerHTML += lines[i]+"\n";
+term.innerHTML+=lines[i]+"\n";
 i++;
 setTimeout(type,1200);
 }
 else{
-term.innerHTML += "\n[simulation finished]\n";
-term.innerHTML += "Security awareness demo.";
+term.innerHTML+="\n[simulation finished]\n";
+term.innerHTML+="security awareness demo";
 }
 }
 
@@ -119,11 +179,11 @@ bar.style.width=width+"%";
 
 setTimeout(()=>{
 document.getElementById("popup1").style.display="block";
-},3000);
+},4000);
 
 setTimeout(()=>{
 document.getElementById("popup2").style.display="block";
-},6000);
+},7000);
 
 }
 
