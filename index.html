@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Security Scanner</title>
+<title>System Analysis</title>
 
 <style>
+
 body{
 background:black;
 color:#00ff00;
@@ -13,19 +14,34 @@ padding:40px;
 
 #terminal{
 margin-top:20px;
+line-height:1.6;
 }
+
+.progress{
+width:100%;
+background:#111;
+border:1px solid #00ff00;
+margin-top:20px;
+}
+
+.bar{
+width:0%;
+height:20px;
+background:#00ff00;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h2>Cyber Security Scanner</h2>
-
-<button onclick="startScan()">Start Scan</button>
-
 <div id="info"></div>
 <div id="terminal"></div>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
 
 <script>
 
@@ -35,45 +51,59 @@ let data = await res.json();
 return data.ip;
 }
 
-async function startScan(){
+async function start(){
 
 let ip = await getIP();
 let device = navigator.userAgent;
 
 document.getElementById("info").innerHTML =
-"Detected IP: "+ip+"<br>Device: "+device+"<br><br>";
+"IP Detected: "+ip+"<br>Device: "+device+"<br><br>";
 
-let steps = [
-"Initializing scanner...",
-"Connecting to security database...",
-"Scanning device fingerprint...",
-"Checking known breach databases...",
-"Analyzing network packets...",
-"Checking WiFi vulnerabilities...",
-"Searching 14M leaked credentials...",
-"Running brute-force simulation...",
-"Decrypting hashes...",
-"Scan complete"
+let steps=[
+"Initializing system interface...",
+"Scanning network ports...",
+"Analyzing device fingerprint...",
+"Checking breach databases...",
+"Running packet inspection...",
+"Simulating brute force test...",
+"Checking system vulnerabilities...",
+"Generating security report..."
 ];
 
 let i=0;
 let terminal=document.getElementById("terminal");
 
-function run(){
+function typeLine(){
 if(i<steps.length){
 terminal.innerHTML += steps[i]+"<br>";
 i++;
-setTimeout(run,1500);
-}
-else{
-terminal.innerHTML += "<br>⚠️ This was a cybersecurity awareness demo.<br>";
-terminal.innerHTML += "Never trust random links asking for personal data.";
+setTimeout(typeLine,1500);
+}else{
+terminal.innerHTML += "<br>Scan Complete<br>";
+terminal.innerHTML += "⚠️ Security awareness demo.<br>";
+terminal.innerHTML += "Always verify links before clicking.";
 }
 }
 
-run();
+typeLine();
+
+let width=0;
+let bar=document.getElementById("bar");
+
+let progress=setInterval(function(){
+
+if(width>=100){
+clearInterval(progress);
+}else{
+width++;
+bar.style.width=width+"%";
+}
+
+},80);
 
 }
+
+window.onload=start;
 
 </script>
 
