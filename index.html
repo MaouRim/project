@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Security Scanner</title>
+
+<style>
+body{
+background:black;
+color:#00ff00;
+font-family:monospace;
+padding:40px;
+}
+
+#terminal{
+margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>Cyber Security Scanner</h2>
+
+<button onclick="startScan()">Start Scan</button>
+
+<div id="info"></div>
+<div id="terminal"></div>
+
+<script>
+
+async function getIP(){
+let res = await fetch("https://api.ipify.org?format=json");
+let data = await res.json();
+return data.ip;
+}
+
+async function startScan(){
+
+let ip = await getIP();
+let device = navigator.userAgent;
+
+document.getElementById("info").innerHTML =
+"Detected IP: "+ip+"<br>Device: "+device+"<br><br>";
+
+let steps = [
+"Initializing scanner...",
+"Connecting to security database...",
+"Scanning device fingerprint...",
+"Checking known breach databases...",
+"Analyzing network packets...",
+"Checking WiFi vulnerabilities...",
+"Searching 14M leaked credentials...",
+"Running brute-force simulation...",
+"Decrypting hashes...",
+"Scan complete"
+];
+
+let i=0;
+let terminal=document.getElementById("terminal");
+
+function run(){
+if(i<steps.length){
+terminal.innerHTML += steps[i]+"<br>";
+i++;
+setTimeout(run,1500);
+}
+else{
+terminal.innerHTML += "<br>⚠️ This was a cybersecurity awareness demo.<br>";
+terminal.innerHTML += "Never trust random links asking for personal data.";
+}
+}
+
+run();
+
+}
+
+</script>
+
+</body>
+</html>
